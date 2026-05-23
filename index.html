@@ -51,85 +51,103 @@
         </div>
       </header>
 
-      <section class="hero-grid">
-        <article class="pixel-panel hero-card" data-reveal>
-          <p class="section-label" data-i18n="heroLabel">Player One / Portfolio</p>
-          <h1 data-i18n="heroTitle">Portfolyom</h1>
-          <p class="hero-copy" data-i18n-html="heroCopy">
-            Ben <strong>Can Bilal Sipahi</strong>. Unity ile oynanış prototipleri, Python ile
-            AI araçları ve gerçek problemi çözen yazılım sistemleri geliştiriyorum. Bu sayfada
-            itch.io oyunlarımı, CV'mdeki projeleri ve GitHub üretim çizgimi daha oyun hissi
-            taşıyan bir arayüzle topladım.
-          </p>
+      <div class="section-shell section-shell--hero">
+        <canvas
+          class="section-side-art section-side-art--left"
+          data-scene="galactic-left"
+          width="148"
+          height="560"
+          aria-hidden="true"
+        ></canvas>
 
-          <div class="hero-actions">
-            <a class="pixel-button pixel-button--primary" href="#projects" data-i18n="heroPrimaryCta">
-              Projeleri aç
-            </a>
-            <a
-              class="pixel-button pixel-button--secondary"
-              href="assets/cv/can-bilal-sipahi-cv.pdf"
-              download
-              data-i18n="heroSecondaryCta"
-            >
-              CV indir
-            </a>
-          </div>
+        <section class="hero-grid">
+          <article class="pixel-panel hero-card" data-reveal>
+            <p class="section-label" data-i18n="heroLabel">Player One / Portfolio</p>
+            <h1 data-i18n="heroTitle">Portfolyom</h1>
+            <p class="hero-copy" data-i18n-html="heroCopy">
+              Ben <strong>Can Bilal Sipahi</strong>. Unity ile oynanış prototipleri, Python ile
+              AI araçları ve gerçek problemi çözen yazılım sistemleri geliştiriyorum. Bu sayfada
+              itch.io oyunlarımı, CV'mdeki projeleri ve GitHub üretim çizgimi daha oyun hissi
+              taşıyan bir arayüzle topladım.
+            </p>
 
-          <ul class="hero-tags" aria-label="Kısa bilgiler">
-            <li data-i18n="heroTagOne">Unity prototipleri</li>
-            <li data-i18n="heroTagTwo">itch.io yayınları</li>
-            <li data-i18n="heroTagThree">AI ve veri odaklı projeler</li>
-          </ul>
-        </article>
-
-        <aside class="pixel-panel hud-panel" data-reveal aria-label="Oyuncu durumu">
-          <div class="hud-panel__top">
-            <h2 data-i18n="playerInfo">Oyuncu Bilgisi</h2>
-            <span class="status-pill" data-i18n="activeBuild">Active Build</span>
-          </div>
-
-          <p class="mini-copy" data-i18n="energyLabel">Enerji seviyesi</p>
-          <div class="energy-strip" aria-label="Enerji seviyesi">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span class="is-dim"></span>
-          </div>
-
-          <div class="stat-block">
-            <div class="stat-line">
-              <span data-i18n="unityGameplay">Unity Gameplay</span>
-              <strong>88%</strong>
+            <div class="hero-actions">
+              <a class="pixel-button pixel-button--primary" href="#projects" data-i18n="heroPrimaryCta">
+                Projeleri aç
+              </a>
+              <a
+                class="pixel-button pixel-button--secondary"
+                href="assets/cv/can-bilal-sipahi-cv.pdf"
+                download
+                data-i18n="heroSecondaryCta"
+              >
+                CV indir
+              </a>
             </div>
-            <div class="pixel-meter"><i style="width: 88%"></i></div>
-          </div>
 
-          <div class="stat-block">
-            <div class="stat-line">
-              <span data-i18n="generativeAi">Generative AI</span>
-              <strong>84%</strong>
+            <ul class="hero-tags" aria-label="Kısa bilgiler">
+              <li data-i18n="heroTagOne">Unity prototipleri</li>
+              <li data-i18n="heroTagTwo">itch.io yayınları</li>
+              <li data-i18n="heroTagThree">AI ve veri odaklı projeler</li>
+            </ul>
+          </article>
+
+          <aside class="pixel-panel hud-panel" data-reveal aria-label="Oyuncu durumu">
+            <div class="hud-panel__top">
+              <h2 data-i18n="playerInfo">Oyuncu Bilgisi</h2>
+              <span class="status-pill" data-i18n="activeBuild">Active Build</span>
             </div>
-            <div class="pixel-meter pixel-meter--blue"><i style="width: 84%"></i></div>
-          </div>
 
-          <div class="stat-block">
-            <div class="stat-line">
-              <span data-i18n="problemSolving">Problem Solving</span>
-              <strong>80%</strong>
+            <p class="mini-copy" data-i18n="energyLabel">Enerji seviyesi</p>
+            <div class="energy-strip" aria-label="Enerji seviyesi">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span class="is-dim"></span>
             </div>
-            <div class="pixel-meter pixel-meter--gold"><i style="width: 80%"></i></div>
-          </div>
 
-          <div class="hud-chips">
-            <span data-i18n="chipLocation">İstanbul / Avcılar</span>
-            <span data-i18n="chipLanguage">English B1</span>
-            <span data-i18n="chipTarget">Staj / Junior</span>
-            <span data-i18n="chipStack">Unity + Python</span>
-          </div>
-        </aside>
-      </section>
+            <div class="stat-block">
+              <div class="stat-line">
+                <span data-i18n="unityGameplay">Unity Gameplay</span>
+                <strong>88%</strong>
+              </div>
+              <div class="pixel-meter"><i style="width: 88%"></i></div>
+            </div>
+
+            <div class="stat-block">
+              <div class="stat-line">
+                <span data-i18n="generativeAi">Generative AI</span>
+                <strong>84%</strong>
+              </div>
+              <div class="pixel-meter pixel-meter--blue"><i style="width: 84%"></i></div>
+            </div>
+
+            <div class="stat-block">
+              <div class="stat-line">
+                <span data-i18n="problemSolving">Problem Solving</span>
+                <strong>80%</strong>
+              </div>
+              <div class="pixel-meter pixel-meter--gold"><i style="width: 80%"></i></div>
+            </div>
+
+            <div class="hud-chips">
+              <span data-i18n="chipLocation">İstanbul / Avcılar</span>
+              <span data-i18n="chipLanguage">English B1</span>
+              <span data-i18n="chipTarget">Staj / Junior</span>
+              <span data-i18n="chipStack">Unity + Python</span>
+            </div>
+          </aside>
+        </section>
+
+        <canvas
+          class="section-side-art section-side-art--right"
+          data-scene="blocks-right"
+          width="148"
+          height="560"
+          aria-hidden="true"
+        ></canvas>
+      </div>
 
       <section class="ticker-shell pixel-panel" data-reveal>
         <div class="ticker-track">
@@ -154,7 +172,23 @@
         </div>
       </section>
 
-      <section class="section-block pixel-panel" id="projects">
+      <section class="section-block section-block--decor pixel-panel" id="projects">
+        <canvas
+          class="section-side-art section-side-art--left"
+          data-scene="blocks-left"
+          width="148"
+          height="560"
+          aria-hidden="true"
+        ></canvas>
+
+        <canvas
+          class="section-side-art section-side-art--right"
+          data-scene="galactic-right"
+          width="148"
+          height="560"
+          aria-hidden="true"
+        ></canvas>
+
         <div class="section-head" data-reveal>
           <p class="section-label" data-i18n="projectsLabel">Mission Select</p>
           <h2 data-i18n="projectsTitle">Projeler</h2>

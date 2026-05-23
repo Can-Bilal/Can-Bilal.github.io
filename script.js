@@ -4,6 +4,7 @@ const tiltItems = document.querySelectorAll(".mission-card, .lab-card, .focus-ca
 const yearNode = document.querySelector("[data-year]");
 const languageButtons = document.querySelectorAll("[data-lang-button]");
 const metaDescription = document.querySelector("#meta-description");
+const sceneCanvases = document.querySelectorAll(".section-side-art");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const translations = {
@@ -319,6 +320,359 @@ try {
 }
 
 applyLanguage(initialLanguage);
+
+const pixel = (ctx, x, y, w, h, color) => {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, w, h);
+};
+
+const drawPixelShape = (ctx, originX, originY, scale, parts) => {
+  parts.forEach(([x, y, w, h, color]) => {
+    pixel(ctx, originX + x * scale, originY + y * scale, w * scale, h * scale, color);
+  });
+};
+
+const drawBlockCell = (ctx, x, y, size, color) => {
+  pixel(ctx, x, y, size, size, color);
+  pixel(ctx, x + 2, y + 2, size - 4, 3, "rgba(255, 255, 255, 0.22)");
+  pixel(ctx, x + 2, y + 2, 3, size - 4, "rgba(255, 255, 255, 0.18)");
+  pixel(ctx, x + size - 4, y + 2, 2, size - 4, "rgba(13, 11, 22, 0.24)");
+  pixel(ctx, x + 2, y + size - 4, size - 4, 2, "rgba(13, 11, 22, 0.24)");
+};
+
+const drawBlockCluster = (ctx, originX, originY, size, cells, color) => {
+  cells.forEach(([gridX, gridY]) => {
+    drawBlockCell(ctx, originX + gridX * size, originY + gridY * size, size, color);
+  });
+};
+
+const drawSpark = (ctx, x, y, color) => {
+  pixel(ctx, x + 4, y, 4, 12, color);
+  pixel(ctx, x, y + 4, 12, 4, color);
+  pixel(ctx, x + 2, y + 2, 8, 8, "rgba(255, 255, 255, 0.2)");
+};
+
+const drawBeam = (ctx, startX, startY, steps, color) => {
+  for (let step = 0; step < steps; step += 1) {
+    pixel(ctx, startX + step * 5, startY + step * 9, 8, 20, color);
+  }
+};
+
+const drawPlayerShip = (ctx, originX, originY, scale) => {
+  drawPixelShape(ctx, originX, originY, scale, [
+    [5, 0, 4, 1, "#58566d"],
+    [4, 1, 6, 1, "#9a9cb0"],
+    [3, 2, 2, 1, "#7a7d90"],
+    [5, 2, 4, 1, "#3f4458"],
+    [9, 2, 2, 1, "#7a7d90"],
+    [2, 3, 2, 2, "#62657a"],
+    [4, 3, 2, 2, "#2d3142"],
+    [6, 3, 2, 3, "#171b28"],
+    [8, 3, 2, 2, "#2d3142"],
+    [10, 3, 2, 2, "#62657a"],
+    [3, 5, 2, 2, "#4d5166"],
+    [5, 5, 1, 2, "#7a7d90"],
+    [6, 5, 2, 2, "#5fd7ff"],
+    [8, 5, 1, 2, "#7a7d90"],
+    [9, 5, 2, 2, "#4d5166"],
+    [1, 6, 2, 3, "#3e4359"],
+    [3, 7, 2, 2, "#262b3c"],
+    [5, 7, 1, 2, "#50556a"],
+    [6, 7, 2, 3, "#1a1f2e"],
+    [8, 7, 1, 2, "#50556a"],
+    [9, 7, 2, 2, "#262b3c"],
+    [11, 6, 2, 3, "#3e4359"],
+    [2, 9, 2, 2, "#2b3040"],
+    [4, 9, 2, 2, "#50556a"],
+    [6, 9, 2, 3, "#171b28"],
+    [8, 9, 2, 2, "#50556a"],
+    [10, 9, 2, 2, "#2b3040"],
+    [0, 10, 2, 3, "#50556a"],
+    [2, 11, 2, 2, "#252a39"],
+    [4, 11, 2, 2, "#717489"],
+    [6, 12, 2, 3, "#3a4054"],
+    [8, 11, 2, 2, "#717489"],
+    [10, 11, 2, 2, "#252a39"],
+    [12, 10, 2, 3, "#50556a"],
+    [1, 13, 2, 2, "#2c3141"],
+    [3, 13, 2, 2, "#5e6378"],
+    [5, 15, 1, 2, "#f58d54"],
+    [6, 15, 2, 2, "#2a2f40"],
+    [8, 15, 1, 2, "#f58d54"],
+    [9, 13, 2, 2, "#5e6378"],
+    [11, 13, 2, 2, "#2c3141"],
+    [0, 13, 1, 3, "#202533"],
+    [13, 13, 1, 3, "#202533"],
+    [2, 15, 2, 2, "#f05f4f"],
+    [10, 15, 2, 2, "#f05f4f"],
+    [4, 5, 1, 4, "#f28d32"],
+    [9, 5, 1, 4, "#f28d32"],
+  ]);
+};
+
+const drawEnemyShip = (ctx, originX, originY, scale) => {
+  drawPixelShape(ctx, originX, originY, scale, [
+    [4, 0, 3, 1, "#9a9fb4"],
+    [3, 1, 5, 1, "#6d7287"],
+    [1, 2, 2, 1, "#81869a"],
+    [3, 2, 5, 1, "#2b3040"],
+    [8, 2, 2, 1, "#81869a"],
+    [0, 3, 2, 1, "#9a9fb4"],
+    [2, 3, 2, 2, "#62677c"],
+    [4, 3, 2, 2, "#232838"],
+    [6, 3, 2, 2, "#62677c"],
+    [8, 3, 2, 1, "#9a9fb4"],
+    [1, 5, 2, 2, "#4d5267"],
+    [3, 5, 1, 2, "#2b3040"],
+    [4, 5, 2, 2, "#f05f4f"],
+    [6, 5, 1, 2, "#2b3040"],
+    [7, 5, 2, 2, "#4d5267"],
+    [0, 6, 2, 2, "#c2c5d2"],
+    [2, 7, 2, 2, "#7a7f93"],
+    [4, 7, 2, 2, "#272c3b"],
+    [6, 7, 2, 2, "#7a7f93"],
+    [8, 6, 2, 2, "#c2c5d2"],
+  ]);
+};
+
+const drawMiniCruiser = (ctx, originX, originY, scale) => {
+  drawPixelShape(ctx, originX, originY, scale, [
+    [3, 0, 3, 1, "#d7dae4"],
+    [2, 1, 5, 1, "#7d8297"],
+    [1, 2, 2, 1, "#5d6277"],
+    [3, 2, 3, 1, "#262b3c"],
+    [6, 2, 2, 1, "#5d6277"],
+    [0, 3, 2, 2, "#babfce"],
+    [2, 3, 1, 2, "#53586c"],
+    [3, 3, 2, 3, "#1d2230"],
+    [5, 3, 1, 2, "#53586c"],
+    [6, 3, 2, 2, "#babfce"],
+    [2, 5, 1, 1, "#f05f4f"],
+    [5, 5, 1, 1, "#f05f4f"],
+  ]);
+};
+
+const drawWingShip = (ctx, originX, originY, scale) => {
+  drawPixelShape(ctx, originX, originY, scale, [
+    [4, 0, 2, 1, "#d8dce7"],
+    [3, 1, 4, 1, "#7f859a"],
+    [2, 2, 2, 1, "#5b6075"],
+    [4, 2, 2, 1, "#1f2432"],
+    [6, 2, 2, 1, "#5b6075"],
+    [1, 3, 2, 2, "#bcc1d0"],
+    [3, 3, 2, 2, "#4f556a"],
+    [5, 3, 2, 2, "#4f556a"],
+    [7, 3, 2, 2, "#bcc1d0"],
+    [3, 5, 1, 2, "#f05f4f"],
+    [4, 5, 2, 2, "#5fd7ff"],
+    [6, 5, 1, 2, "#f05f4f"],
+    [2, 7, 2, 2, "#6a6f84"],
+    [4, 7, 2, 2, "#232838"],
+    [6, 7, 2, 2, "#6a6f84"],
+  ]);
+};
+
+const drawBomberShip = (ctx, originX, originY, scale) => {
+  drawPixelShape(ctx, originX, originY, scale, [
+    [4, 0, 4, 1, "#9ea3b7"],
+    [3, 1, 6, 1, "#72778c"],
+    [1, 2, 2, 2, "#5a6074"],
+    [3, 2, 6, 2, "#2b3040"],
+    [9, 2, 2, 2, "#5a6074"],
+    [0, 4, 3, 2, "#4d5267"],
+    [3, 4, 2, 3, "#676d82"],
+    [5, 4, 2, 4, "#171b28"],
+    [7, 4, 2, 3, "#676d82"],
+    [9, 4, 3, 2, "#4d5267"],
+    [2, 7, 2, 2, "#2c3141"],
+    [4, 8, 1, 2, "#f28d32"],
+    [5, 8, 2, 2, "#f05f4f"],
+    [7, 8, 1, 2, "#f28d32"],
+    [8, 7, 2, 2, "#2c3141"],
+  ]);
+};
+
+const drawGamepad = (ctx, originX, originY, scale) => {
+  drawPixelShape(ctx, originX, originY, scale, [
+    [2, 0, 8, 1, "#7e84a0"],
+    [1, 1, 10, 1, "#959bb4"],
+    [0, 2, 12, 3, "#30364a"],
+    [1, 5, 10, 2, "#252a3a"],
+    [2, 7, 2, 2, "#515873"],
+    [8, 7, 2, 2, "#515873"],
+    [3, 3, 1, 3, "#5fd7ff"],
+    [2, 4, 3, 1, "#5fd7ff"],
+    [8, 3, 1, 1, "#ff667c"],
+    [10, 3, 1, 1, "#ffd45e"],
+    [9, 2, 1, 3, "#8eff82"],
+    [6, 3, 1, 1, "#bcc1d0"],
+    [7, 4, 1, 1, "#bcc1d0"],
+  ]);
+};
+
+const drawJoystick = (ctx, originX, originY, scale) => {
+  drawPixelShape(ctx, originX, originY, scale, [
+    [4, 0, 2, 2, "#ff667c"],
+    [4, 2, 2, 4, "#babfce"],
+    [2, 6, 6, 2, "#4a5066"],
+    [1, 8, 8, 2, "#262b3c"],
+    [0, 10, 10, 2, "#181d2b"],
+    [2, 11, 6, 1, "#5fd7ff"],
+  ]);
+};
+
+const drawCartridge = (ctx, originX, originY, scale) => {
+  drawPixelShape(ctx, originX, originY, scale, [
+    [1, 0, 8, 1, "#8f95af"],
+    [0, 1, 10, 7, "#2b3040"],
+    [1, 2, 8, 3, "#5fd7ff"],
+    [2, 3, 6, 1, "#1f7f9e"],
+    [2, 5, 6, 2, "#161b28"],
+    [3, 6, 1, 1, "#ff667c"],
+    [6, 6, 1, 1, "#ffd45e"],
+  ]);
+};
+
+const drawSword = (ctx, originX, originY, scale) => {
+  drawPixelShape(ctx, originX, originY, scale, [
+    [5, 0, 2, 5, "#d7dae4"],
+    [4, 1, 4, 1, "#9ca2b9"],
+    [4, 5, 4, 1, "#ffd45e"],
+    [5, 6, 2, 2, "#7b5232"],
+    [4, 8, 4, 2, "#5d3d28"],
+    [5, 10, 2, 3, "#2b3040"],
+  ]);
+};
+
+const drawPotion = (ctx, originX, originY, scale) => {
+  drawPixelShape(ctx, originX, originY, scale, [
+    [4, 0, 2, 2, "#8f6746"],
+    [3, 2, 4, 1, "#c89d74"],
+    [2, 3, 6, 1, "#d7dae4"],
+    [1, 4, 8, 4, "#5fd7ff"],
+    [2, 8, 6, 2, "#2f93b8"],
+    [3, 10, 4, 1, "#d7dae4"],
+  ]);
+};
+
+const drawCoin = (ctx, originX, originY, scale) => {
+  drawPixelShape(ctx, originX, originY, scale, [
+    [2, 0, 4, 1, "#ffe081"],
+    [1, 1, 6, 1, "#ffd45e"],
+    [0, 2, 8, 4, "#f0b92e"],
+    [1, 6, 6, 1, "#d89c1f"],
+    [2, 7, 4, 1, "#ffe081"],
+    [3, 2, 1, 4, "#ffd45e"],
+    [5, 2, 1, 4, "#a87817"],
+  ]);
+};
+
+const drawOrb = (ctx, originX, originY, scale) => {
+  drawPixelShape(ctx, originX, originY, scale, [
+    [2, 0, 4, 1, "#baf3ff"],
+    [1, 1, 6, 1, "#5fd7ff"],
+    [0, 2, 8, 4, "#289bc4"],
+    [1, 6, 6, 1, "#1d6e8b"],
+    [2, 7, 4, 1, "#baf3ff"],
+    [2, 2, 2, 2, "rgba(255, 255, 255, 0.25)"],
+  ]);
+};
+
+const drawTileStack = (ctx, originX, originY, scale) => {
+  drawPixelShape(ctx, originX, originY, scale, [
+    [0, 2, 4, 2, "#31c9d8"],
+    [4, 2, 4, 2, "#21c1b8"],
+    [8, 2, 4, 2, "#9bcc2f"],
+    [2, 0, 4, 2, "#ffb51f"],
+    [6, 0, 4, 2, "#ff667c"],
+    [4, 4, 4, 2, "#9b5cff"],
+  ]);
+};
+
+const drawSparkle = (ctx, x, y, color) => {
+  pixel(ctx, x + 4, y, 4, 12, color);
+  pixel(ctx, x, y + 4, 12, 4, color);
+  pixel(ctx, x + 3, y + 3, 6, 6, "rgba(255, 255, 255, 0.18)");
+};
+
+const drawBlockBackdrop = (ctx, offsetY) => {
+  drawBeam(ctx, 4, offsetY - 12, 5, "rgba(176, 227, 255, 0.12)");
+  drawBeam(ctx, 40, offsetY - 24, 5, "rgba(176, 227, 255, 0.14)");
+  drawBeam(ctx, 82, offsetY - 16, 5, "rgba(176, 227, 255, 0.1)");
+};
+
+const drawScene = (canvas) => {
+  const ctx = canvas.getContext("2d");
+  const { width, height } = canvas;
+  const scene = canvas.dataset.scene;
+
+  ctx.imageSmoothingEnabled = false;
+  ctx.clearRect(0, 0, width, height);
+
+  const stars = [
+    [18, 24], [64, 34], [114, 18], [38, 142], [100, 118], [24, 250], [118, 226], [72, 320],
+    [16, 410], [110, 396], [46, 512], [124, 520],
+  ];
+
+  if (scene === "galactic-left" || scene === "galactic-right") {
+    stars.forEach(([x, y], index) => {
+      pixel(ctx, x, y, index % 3 === 0 ? 4 : 3, index % 2 === 0 ? 4 : 3, index % 2 === 0 ? "#5fd7ff" : "#ffd45e");
+    });
+  }
+
+  switch (scene) {
+    case "galactic-left":
+      pixel(ctx, 20, 82, 108, 8, "#4f3f78");
+      drawGamepad(ctx, 34, 32, 5);
+      drawSparkle(ctx, 92, 52, "#5fd7ff");
+      pixel(ctx, 18, 238, 108, 8, "#4f3f78");
+      drawSword(ctx, 50, 154, 5);
+      drawPotion(ctx, 90, 174, 4);
+      pixel(ctx, 18, 428, 108, 8, "#4f3f78");
+      drawCartridge(ctx, 38, 458, 5);
+      drawOrb(ctx, 92, 480, 4);
+      break;
+    case "blocks-right":
+      pixel(ctx, 18, 86, 108, 8, "#4f3f78");
+      drawPlayerShip(ctx, 36, 32, 4);
+      drawEnemyShip(ctx, 92, 62, 3);
+      pixel(ctx, 18, 266, 108, 8, "#4f3f78");
+      drawJoystick(ctx, 50, 190, 5);
+      drawCoin(ctx, 92, 212, 4);
+      pixel(ctx, 18, 458, 108, 8, "#4f3f78");
+      drawBomberShip(ctx, 30, 398, 4);
+      drawMiniCruiser(ctx, 98, 480, 3);
+      break;
+    case "blocks-left":
+      pixel(ctx, 18, 94, 108, 8, "#4f3f78");
+      drawTileStack(ctx, 26, 40, 5);
+      drawSparkle(ctx, 92, 62, "#ffd45e");
+      pixel(ctx, 18, 286, 108, 8, "#4f3f78");
+      drawBlockCluster(ctx, 24, 218, 18, [[0, 0], [1, 0], [0, 1], [1, 1]], "#9ac526");
+      drawBlockCluster(ctx, 58, 218, 18, [[0, 1], [1, 1], [2, 1], [2, 0]], "#1ab3a7");
+      drawBlockCluster(ctx, 78, 182, 18, [[1, 0], [0, 1], [1, 1], [1, 2]], "#f7a30a");
+      drawBlockCluster(ctx, 110, 216, 14, [[0, 1], [1, 1], [2, 1], [2, 0]], "#eb445b");
+      pixel(ctx, 18, 474, 108, 8, "#4f3f78");
+      drawPotion(ctx, 32, 398, 5);
+      drawOrb(ctx, 92, 432, 5);
+      break;
+    case "galactic-right":
+      pixel(ctx, 20, 92, 108, 8, "#4f3f78");
+      drawWingShip(ctx, 30, 40, 4);
+      drawCoin(ctx, 94, 72, 5);
+      pixel(ctx, 20, 266, 108, 8, "#4f3f78");
+      drawBomberShip(ctx, 28, 198, 4);
+      drawSparkle(ctx, 98, 220, "#ff667c");
+      pixel(ctx, 20, 462, 108, 8, "#4f3f78");
+      drawJoystick(ctx, 34, 384, 5);
+      drawMiniCruiser(ctx, 94, 432, 4);
+      break;
+    default:
+      break;
+  }
+};
+
+sceneCanvases.forEach(drawScene);
 
 if (!reduceMotion && revealItems.length > 0) {
   const revealObserver = new IntersectionObserver(

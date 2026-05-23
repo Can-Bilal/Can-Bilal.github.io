@@ -1,6 +1,6 @@
 const header = document.querySelector("[data-header]");
 const revealItems = document.querySelectorAll("[data-reveal]");
-const tiltItems = document.querySelectorAll(".project-card, .glass-card");
+const tiltItems = document.querySelectorAll(".mission-card, .lab-card, .focus-card, .hud-panel");
 const yearNode = document.querySelector("[data-year]");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
